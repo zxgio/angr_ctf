@@ -32,7 +32,7 @@ def main(argv):
   # line as follows:
   # python ./scaffold00.py [binary]
   # (!)
-  path_to_binary = ???  # :string
+  path_to_binary = "00_angr_find"  # :string
   project = angr.Project(path_to_binary)
 
   # Tell Angr where to start executing (should it start from the main()
@@ -45,11 +45,11 @@ def main(argv):
   simulation = project.factory.simgr(initial_state)
 
   # Explore the binary to attempt to find the address that prints "Good Job."
-  # You will have to find the address you want to find and insert it here. 
-  # This function will keep executing until it either finds a solution or it 
+  # You will have to find the address you want to find and insert it here.
+  # This function will keep executing until it either finds a solution or it
   # has explored every possible path through the executable.
   # (!)
-  print_good_address = ???  # :integer (probably in hexadecimal)
+  print_good_address = 0x08048675  # :integer (probably in hexadecimal)
   simulation.explore(find=print_good_address)
 
   # Check that we have found a solution. The simulation.explore() method will
@@ -61,9 +61,9 @@ def main(argv):
     # target address.
     solution_state = simulation.found[0]
 
-    # Print the string that Angr wrote to stdin to follow solution_state. This 
+    # Print the string that Angr wrote to stdin to follow solution_state. This
     # is our solution.
-    print solution_state.posix.dumps(sys.stdin.fileno())
+    print(solution_state.posix.dumps(sys.stdin.fileno()))
   else:
     # If Angr could not find a path that reaches print_good_address, throw an
     # error. Perhaps you mistyped the print_good_address?

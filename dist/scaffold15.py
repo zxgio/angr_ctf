@@ -1,8 +1,8 @@
 # This binary takes both an integer and a string as a parameter. A certain
 # integer input causes the program to reach a buffer overflow with which we can
-# read a string from an arbitrary memory location. Our goal is to use Angr to 
+# read a string from an arbitrary memory location. Our goal is to use Angr to
 # search the program for this buffer overflow and then automatically generate
-# an exploit to read the string "Good Job." 
+# an exploit to read the string "Good Job."
 #
 # What is the point of reading the string "Good Job."?
 # This CTF attempts to replicate a simplified version of a possible vulnerability
@@ -14,7 +14,7 @@
 # The general strategy for crafting this script will be to:
 # 1) Search for calls of the 'puts' function, which will eventually be exploited
 #    to print out "Good Job."
-# 2) Determine if the first parameter of 'puts', a pointer to the string to be 
+# 2) Determine if the first parameter of 'puts', a pointer to the string to be
 #    printed, can be controlled by the user to be set to the location of the
 #    "Good Job." string.
 # 3) Solve for the input that prints "Good Job."
@@ -27,13 +27,13 @@
 # #include <stdlib.h>
 # #include <string.h>
 # #include <stdint.h>
-# 
+#
 # // This will all be in .rodata
 # char msg[] = "${ description }$";
 # char* try_again = "Try again.";
 # char* good_job = "Good Job.";
 # uint32_t key;
-# 
+#
 # void print_msg() {
 #   printf("%s", msg);
 # }
@@ -41,23 +41,23 @@
 # uint32_t complex_function(uint32_t input) {
 #   ...
 # }
-# 
+#
 # struct overflow_me {
 #   char buffer[16];
 #   char* to_print;
-# }; 
-# 
+# };
+#
 # int main(int argc, char* argv[]) {
 #   struct overflow_me locals;
 #   locals.to_print = try_again;
-# 
+#
 #   print_msg();
-# 
+#
 #   printf("Enter the password: ");
 #   scanf("%u %20s", &key, locals.buffer);
 #
 #   key = complex_function(key);
-# 
+#
 #   switch (key) {
 #     case ?:
 #       puts(try_again);
@@ -71,10 +71,10 @@
 #       // "Good Job.")
 #       puts(locals.to_print);
 #       break;
-#     
+#
 #     ...
 #   }
-# 
+#
 #   return 0;
 # }
 
@@ -97,7 +97,7 @@ def main(argv):
     def run(self, format_string, ...???):
       # %u
       scanf0 = claripy.BVS('scanf0', ???)
-      
+
       # %20s
       scanf1 = claripy.BVS('scanf1', ???)
 
@@ -110,7 +110,7 @@ def main(argv):
         # without constraining the characters to the capital letters.
         # Even though the solution will technically work without this, it's more
         # difficult to enter in a solution that contains character you can't
-        # copy, paste, or type into your terminal or the web form that checks 
+        # copy, paste, or type into your terminal or the web form that checks
         # your solution.
         # If you are using the web form to submit answers, your solution must be
         # entirely alphanumeric except for spaces.
@@ -161,7 +161,7 @@ def main(argv):
 
     # The following function takes a bitvector as a parameter and checks if it
     # can take on more than one value. While this does not necessary tell us we
-    # have found an exploitable state, it is a strong indication that the 
+    # have found an exploitable state, it is a strong indication that the
     # bitvector we checked may be controllable by the user.
     # Use it to determine if the pointer passed to puts is symbolic.
     # (!)
